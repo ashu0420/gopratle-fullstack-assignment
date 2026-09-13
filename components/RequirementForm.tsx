@@ -1,10 +1,18 @@
 "use client";
 
 import { useState } from "react";
+
 import EventBasics from "./requirement-form/EventBasics";
+import PlannerFields from "./requirement-form/PlannerFields";
+import PerformerFields from "./requirement-form/PerformerFields";
+import CrewFields from "./requirement-form/CrewFields";
+
 import type {
     Category,
+    CrewDetails,
     EventBasics as EventBasicsData,
+    PerformerDetails,
+    PlannerDetails,
 } from "@/types/requirement";
 
 const initialEventBasics: EventBasicsData = {
@@ -17,19 +25,96 @@ const initialEventBasics: EventBasicsData = {
     category: "planner",
 };
 
+const initialPlannerDetails: PlannerDetails = {
+    services: "",
+    guestCount: "",
+    budget: "",
+    planningStage: "",
+    theme: "",
+    specialRequirements: "",
+    notes: "",
+};
+
+const initialPerformerDetails: PerformerDetails = {
+    performanceType: "",
+    genre: "",
+    performerCount: "",
+    duration: "",
+    budget: "",
+    soundSystem: false,
+    lighting: false,
+    stage: false,
+    specialRequirements: "",
+};
+
+const initialCrewDetails: CrewDetails = {
+    role: "",
+    numberRequired: "",
+    experienceLevel: "",
+    duration: "",
+    budget: "",
+    responsibilities: "",
+    equipmentRequired: "",
+    specialRequirements: "",
+    notes: "",
+};
+
 export default function RequirementForm() {
     const [step, setStep] = useState(1);
+
     const [eventBasics, setEventBasics] =
         useState<EventBasicsData>(initialEventBasics);
 
+    const [plannerDetails, setPlannerDetails] =
+        useState<PlannerDetails>(initialPlannerDetails);
+
+    const [performerDetails, setPerformerDetails] =
+        useState<PerformerDetails>(initialPerformerDetails);
+
+    const [crewDetails, setCrewDetails] =
+        useState<CrewDetails>(initialCrewDetails);
+
     const handleNext = () => {
-        setStep((currentStep) => currentStep + 1);
+        setStep((currentStep) => Math.min(4, currentStep + 1));
     };
 
     const handleBack = () => {
         setStep((currentStep) => Math.max(1, currentStep - 1));
     };
 
+    const renderCategoryFields = (currentStep: 2 | 3) => {
+        switch (eventBasics.category) {
+            case "planner":
+                return (
+                    <PlannerFields
+                        step={currentStep}
+                        data={plannerDetails}
+                        onChange={setPlannerDetails}
+                    />
+                );
+
+            case "performer":
+                return (
+                    <PerformerFields
+                        step={currentStep}
+                        data={performerDetails}
+                        onChange={setPerformerDetails}
+                    />
+                );
+
+            case "crew":
+                return (
+                    <CrewFields
+                        step={currentStep}
+                        data={crewDetails}
+                        onChange={setCrewDetails}
+                    />
+                );
+
+            default:
+                return null;
+        }
+      };
     return (
         <div className="mx-auto w-full max-w-2xl rounded-2xl border bg-white p-6 shadow-sm">
             {/* Progress */}
@@ -74,59 +159,57 @@ export default function RequirementForm() {
                 </>
             )}
 
-            {/* Temporary Step 2 */}
+            {/* Step 2 */}
             {step === 2 && (
-                <div className="space-y-6">
-                    <div>
-                        <h2 className="text-2xl font-semibold">
-                            Category Details
-                        </h2>
+                <>
+                    {renderCategoryFields(2)}
 
-                        <p className="mt-1 text-sm text-gray-500">
-                            We&apos;ll add{" "}
-                            <span className="font-medium">
-                                {getCategoryLabel(eventBasics.category)}
-                            </span>{" "}
-                            specific fields here.
-                        </p>
+                    <div className="mt-8 flex justify-between">
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="rounded-lg border px-6 py-2.5 text-sm font-medium transition hover:bg-gray-50"
+                        >
+                            Back
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleNext}
+                            className="rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                        >
+                            Continue
+                        </button>
                     </div>
-
-                    <div className="rounded-lg bg-gray-50 p-4 text-sm">
-                        Selected category:{" "}
-                        <strong>
-                            {getCategoryLabel(eventBasics.category)}
-                        </strong>
-                    </div>
-
-                    <NavigationButtons
-                        onBack={handleBack}
-                        onNext={handleNext}
-                    />
-                </div>
+                </>
             )}
 
-            {/* Temporary Step 3 */}
+            {/* Step 3 */}
             {step === 3 && (
-                <div className="space-y-6">
-                    <div>
-                        <h2 className="text-2xl font-semibold">
-                            Additional Details
-                        </h2>
+                <>
+                    {renderCategoryFields(3)}
 
-                        <p className="mt-1 text-sm text-gray-500">
-                            Category-specific additional requirements will
-                            go here.
-                        </p>
+                    <div className="mt-8 flex justify-between">
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="rounded-lg border px-6 py-2.5 text-sm font-medium transition hover:bg-gray-50"
+                        >
+                            Back
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleNext}
+                            className="rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                        >
+                            Review Requirement
+                        </button>
                     </div>
-
-                    <NavigationButtons
-                        onBack={handleBack}
-                        onNext={handleNext}
-                    />
-                </div>
+                </>
             )}
 
-            {/* Temporary Step 4 */}
+            {/* Step 4 */}
             {step === 4 && (
                 <div className="space-y-6">
                     <div>
@@ -135,23 +218,51 @@ export default function RequirementForm() {
                         </h2>
 
                         <p className="mt-1 text-sm text-gray-500">
-                            Review your event requirement before submitting.
+                            Review your requirement before submitting.
                         </p>
                     </div>
 
                     <div className="rounded-lg bg-gray-50 p-4">
+                        <h3 className="mb-3 font-medium">
+                            Event Details
+                        </h3>
+
                         <pre className="overflow-auto text-sm">
-                            {JSON.stringify(eventBasics, null, 2)}
+                            {JSON.stringify(
+                                {
+                                    ...eventBasics,
+                                    details:
+                                        eventBasics.category === "planner"
+                                            ? plannerDetails
+                                            : eventBasics.category === "performer"
+                                                ? performerDetails
+                                                : crewDetails,
+                                },
+                                null,
+                                2
+                            )}
                         </pre>
                     </div>
 
-                    <NavigationButtons
-                        onBack={handleBack}
-                        onNext={() => {
-                            console.log("Submit:", eventBasics);
-                        }}
-                        nextLabel="Submit Requirement"
-                    />
+                    <div className="flex justify-between">
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="rounded-lg border px-6 py-2.5 text-sm font-medium transition hover:bg-gray-50"
+                        >
+                            Back
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                console.log("Requirement submitted");
+                            }}
+                            className="rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                        >
+                            Submit Requirement
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
@@ -166,36 +277,4 @@ function getCategoryLabel(category: Category) {
     };
 
     return labels[category];
-}
-
-interface NavigationButtonsProps {
-    onBack: () => void;
-    onNext: () => void;
-    nextLabel?: string;
-}
-
-function NavigationButtons({
-    onBack,
-    onNext,
-    nextLabel = "Continue",
-}: NavigationButtonsProps) {
-    return (
-        <div className="flex justify-between">
-            <button
-                type="button"
-                onClick={onBack}
-                className="rounded-lg border px-6 py-2.5 text-sm font-medium transition hover:bg-gray-50"
-            >
-                Back
-            </button>
-
-            <button
-                type="button"
-                onClick={onNext}
-                className="rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-            >
-                {nextLabel}
-            </button>
-        </div>
-    );
 }
