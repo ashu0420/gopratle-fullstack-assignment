@@ -17,13 +17,13 @@ import type {
 
 const initialEventBasics: EventBasicsData = {
     eventName: "",
-    eventType: "other",
+    eventType: "",
     startDate: "",
     endDate: "",
     location: "",
     venue: "",
-    category: "planner",
-};
+    category: "",
+  };
 
 const initialPlannerDetails: PlannerDetails = {
     services: "",
