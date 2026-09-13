@@ -117,8 +117,17 @@ export default function RequirementForm() {
             }
         }
 
+        if (step === 2 || step === 3) {
+            const error = validateCategoryDetails();
+
+            if (error) {
+                alert(error);
+                return;
+            }
+        }
+
         setStep((currentStep) => Math.min(4, currentStep + 1));
-      };
+    };
 
     const handleBack = () => {
         setStep((currentStep) => Math.max(1, currentStep - 1));
@@ -156,6 +165,89 @@ export default function RequirementForm() {
             default:
                 return null;
         }
+    };
+    const validateCategoryDetails = () => {
+        if (eventBasics.category === "planner") {
+            if (!plannerDetails.services.trim()) {
+                return "Please describe the planning services you need.";
+            }
+
+            if (!plannerDetails.guestCount) {
+                return "Please enter the expected guest count.";
+            }
+
+            if (!plannerDetails.budget.trim()) {
+                return "Please enter your budget.";
+            }
+
+            if (!plannerDetails.planningStage) {
+                return "Please select your planning stage.";
+            }
+        }
+
+        if (eventBasics.category === "performer") {
+            if (!performerDetails.performanceType) {
+                return "Please select a performance type.";
+            }
+
+            if (!performerDetails.genre.trim()) {
+                return "Please enter the genre or style.";
+            }
+
+            if (!performerDetails.performerCount) {
+                return "Please enter the number of performers.";
+            }
+
+            if (!performerDetails.duration.trim()) {
+                return "Please enter the performance duration.";
+            }
+
+            if (!performerDetails.budget.trim()) {
+                return "Please enter your budget.";
+            }
+        }
+
+        if (eventBasics.category === "crew") {
+            if (!crewDetails.role.trim()) {
+                return "Please enter the crew role.";
+            }
+
+            if (!crewDetails.numberRequired) {
+                return "Please enter the number of crew members required.";
+            }
+
+            if (!crewDetails.experienceLevel) {
+                return "Please select the experience level.";
+            }
+
+            if (!crewDetails.duration.trim()) {
+                return "Please enter the work duration.";
+            }
+
+            if (!crewDetails.budget.trim()) {
+                return "Please enter your budget.";
+            }
+        }
+
+        return null;
+    };
+    const getSubmissionData = () => {
+        if (!eventBasics.category) {
+            return null;
+        }
+
+        const details =
+            eventBasics.category === "planner"
+                ? plannerDetails
+                : eventBasics.category === "performer"
+                    ? performerDetails
+                    : crewDetails;
+
+        return {
+            ...eventBasics,
+            category: eventBasics.category,
+            details,
+        };
     };
     return (
         <div className="mx-auto w-full max-w-2xl rounded-2xl border bg-white p-6 shadow-sm">
@@ -270,19 +362,7 @@ export default function RequirementForm() {
                         </h3>
 
                         <pre className="overflow-auto text-sm">
-                            {JSON.stringify(
-                                {
-                                    ...eventBasics,
-                                    details:
-                                        eventBasics.category === "planner"
-                                            ? plannerDetails
-                                            : eventBasics.category === "performer"
-                                                ? performerDetails
-                                                : crewDetails,
-                                },
-                                null,
-                                2
-                            )}
+                            {JSON.stringify(getSubmissionData(), null, 2)}
                         </pre>
                     </div>
 
