@@ -63,6 +63,7 @@ export default function RequirementForm() {
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState("");
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const [eventBasics, setEventBasics] =
         useState<EventBasicsData>(initialEventBasics);
@@ -281,10 +282,7 @@ export default function RequirementForm() {
                 );
             }
 
-            setSubmitMessage(
-                "Requirement submitted successfully!"
-            );
-
+            setIsSubmitted(true);
             console.log("Backend response:", result);
         } catch (error) {
             console.error("Submission error:", error);
@@ -395,283 +393,457 @@ export default function RequirementForm() {
             {/* Step 4 */}
             {step === 4 && (
                 <div className="space-y-6">
-                    <div>
-                        <h2 className="text-2xl font-semibold">
-                            Review & Submit
-                        </h2>
+                    {!isSubmitted ? (
+                        <>
+                            <div>
+                                <h2 className="text-2xl font-semibold">
+                                    Review & Submit
+                                </h2>
 
-                        <p className="mt-1 text-sm text-gray-500">
-                            Review your requirement before submitting.
-                        </p>
-                    </div>
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Review your requirement before submitting.
+                                </p>
+                            </div>
 
-                    <div className="rounded-lg bg-gray-50 p-4">
-                        {/* <h3 className="mb-3 font-medium">
-                            Event Details
-                        </h3> */}
+                            <div className="space-y-6">
+                                {/* Event Details */}
+                                <div className="rounded-lg bg-gray-50 p-5">
+                                    <h3 className="text-lg font-semibold">
+                                        Event Details
+                                    </h3>
 
-                        <div className="mt-6 space-y-6">
-                            <div className="rounded-lg bg-gray-50 p-5">
-                                <h3 className="text-lg font-semibold">Event Details</h3>
+                                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Event Name
+                                            </p>
+                                            <p className="font-medium">
+                                                {eventBasics.eventName}
+                                            </p>
+                                        </div>
 
-                                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                    <div>
-                                        <p className="text-sm text-gray-500">Event Name</p>
-                                        <p className="font-medium">{eventBasics.eventName}</p>
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Event Type
+                                            </p>
+                                            <p className="font-medium capitalize">
+                                                {eventBasics.eventType}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Date
+                                            </p>
+                                            <p className="font-medium">
+                                                {eventBasics.startDate === eventBasics.endDate
+                                                    ? formatDate(eventBasics.startDate)
+                                                    : `${formatDate(eventBasics.startDate)} – ${formatDate(
+                                                        eventBasics.endDate
+                                                    )}`}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Location
+                                            </p>
+                                            <p className="font-medium">
+                                                {eventBasics.location}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Venue
+                                            </p>
+                                            <p className="font-medium">
+                                                {eventBasics.venue || "Not specified"}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Category
+                                            </p>
+                                            <p className="font-medium">
+                                                {eventBasics.category
+                                                    ? getCategoryLabel(eventBasics.category)
+                                                    : ""}
+                                            </p>
+                                        </div>
                                     </div>
+                                </div>
 
-                                    <div>
-                                        <p className="text-sm text-gray-500">Event Type</p>
-                                        <p className="font-medium capitalize">
-                                            {eventBasics.eventType}
-                                        </p>
-                                    </div>
+                                {/* Planner Details */}
+                                {eventBasics.category === "planner" && (
+                                    <div className="rounded-lg bg-gray-50 p-5">
+                                        <h3 className="text-lg font-semibold">
+                                            Planner Requirements
+                                        </h3>
 
-                                    <div>
-                                        <p className="text-sm text-gray-500">Date</p>
-                                        <p className="font-medium">
-                                            {eventBasics.startDate === eventBasics.endDate
-                                                ? formatDate(eventBasics.startDate)
-                                                : `${formatDate(eventBasics.startDate)} – ${formatDate(
-                                                    eventBasics.endDate
-                                                )}`}
-                                        </p>
-                                    </div>
+                                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Services
+                                                </p>
+                                                <p className="font-medium">
+                                                    {plannerDetails.services}
+                                                </p>
+                                            </div>
 
-                                    <div>
-                                        <p className="text-sm text-gray-500">Location</p>
-                                        <p className="font-medium">{eventBasics.location}</p>
-                                    </div>
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Guest Count
+                                                </p>
+                                                <p className="font-medium">
+                                                    {plannerDetails.guestCount}
+                                                </p>
+                                            </div>
 
-                                    <div>
-                                        <p className="text-sm text-gray-500">Venue</p>
-                                        <p className="font-medium">
-                                            {eventBasics.venue || "Not specified"}
-                                        </p>
-                                    </div>
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Budget
+                                                </p>
+                                                <p className="font-medium">
+                                                    ₹{plannerDetails.budget}
+                                                </p>
+                                            </div>
 
-                                    <div>
-                                        <p className="text-sm text-gray-500">Category</p>
-                                        <p className="font-medium">
-                                            {eventBasics.category
-                                                ? getCategoryLabel(eventBasics.category)
-                                                : ""}
-                                        </p>
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Planning Stage
+                                                </p>
+                                                <p className="font-medium capitalize">
+                                                    {plannerDetails.planningStage.replace("-", " ")}
+                                                </p>
+                                            </div>
+
+                                            {plannerDetails.theme && (
+                                                <div>
+                                                    <p className="text-sm text-gray-500">
+                                                        Theme
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {plannerDetails.theme}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {plannerDetails.specialRequirements && (
+                                                <div className="sm:col-span-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Special Requirements
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {plannerDetails.specialRequirements}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {plannerDetails.notes && (
+                                                <div className="sm:col-span-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Notes
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {plannerDetails.notes}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
+                                )}
+
+                                {/* Performer Details */}
+                                {eventBasics.category === "performer" && (
+                                    <div className="rounded-lg bg-gray-50 p-5">
+                                        <h3 className="text-lg font-semibold">
+                                            Performer Requirements
+                                        </h3>
+
+                                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Performance Type
+                                                </p>
+                                                <p className="font-medium">
+                                                    {performerDetails.performanceType}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Genre
+                                                </p>
+                                                <p className="font-medium">
+                                                    {performerDetails.genre}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Performers
+                                                </p>
+                                                <p className="font-medium">
+                                                    {performerDetails.performerCount}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Duration
+                                                </p>
+                                                <p className="font-medium">
+                                                    {performerDetails.duration}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Budget
+                                                </p>
+                                                <p className="font-medium">
+                                                    ₹{performerDetails.budget}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Equipment
+                                                </p>
+                                                <p className="font-medium">
+                                                    {[
+                                                        performerDetails.soundSystem &&
+                                                        "Sound System",
+                                                        performerDetails.lighting &&
+                                                        "Lighting",
+                                                        performerDetails.stage &&
+                                                        "Stage",
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(", ") || "None specified"}
+                                                </p>
+                                            </div>
+
+                                            {performerDetails.specialRequirements && (
+                                                <div className="sm:col-span-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Special Requirements
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {performerDetails.specialRequirements}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Crew Details */}
+                                {eventBasics.category === "crew" && (
+                                    <div className="rounded-lg bg-gray-50 p-5">
+                                        <h3 className="text-lg font-semibold">
+                                            Crew Requirements
+                                        </h3>
+
+                                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Role
+                                                </p>
+                                                <p className="font-medium">
+                                                    {crewDetails.role}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Number Required
+                                                </p>
+                                                <p className="font-medium">
+                                                    {crewDetails.numberRequired}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Experience Level
+                                                </p>
+                                                <p className="font-medium">
+                                                    {crewDetails.experienceLevel}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Duration
+                                                </p>
+                                                <p className="font-medium">
+                                                    {crewDetails.duration}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Budget
+                                                </p>
+                                                <p className="font-medium">
+                                                    ₹{crewDetails.budget}
+                                                </p>
+                                            </div>
+
+                                            <div className="sm:col-span-2">
+                                                <p className="text-sm text-gray-500">
+                                                    Responsibilities
+                                                </p>
+                                                <p className="font-medium">
+                                                    {crewDetails.responsibilities}
+                                                </p>
+                                            </div>
+
+                                            {crewDetails.equipmentRequired && (
+                                                <div className="sm:col-span-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Equipment Required
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {crewDetails.equipmentRequired}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {crewDetails.specialRequirements && (
+                                                <div className="sm:col-span-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Special Requirements
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {crewDetails.specialRequirements}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {crewDetails.notes && (
+                                                <div className="sm:col-span-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Notes
+                                                    </p>
+                                                    <p className="font-medium">
+                                                        {crewDetails.notes}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-between">
+                                <button
+                                    type="button"
+                                    onClick={handleBack}
+                                    className="rounded-lg border px-6 py-2.5 text-sm font-medium transition hover:bg-gray-50"
+                                >
+                                    Back
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={handleSubmit}
+                                    disabled={isSubmitting}
+                                    className="rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {isSubmitting
+                                        ? "Submitting..."
+                                        : "Submit Requirement"}
+                                </button>
+                            </div>
+
+                            {submitMessage && (
+                                <p className="text-sm font-medium text-red-600">
+                                    {submitMessage}
+                                </p>
+                            )}
+                        </>
+                    ) : (
+                        <div className="py-8 text-center">
+                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                                <span className="text-2xl">✓</span>
+                            </div>
+
+                            <h2 className="mt-5 text-2xl font-semibold">
+                                Requirement Submitted
+                            </h2>
+
+                            <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
+                                Your event requirement has been submitted
+                                successfully.
+                            </p>
+
+                            <div className="mx-auto mt-6 max-w-md rounded-lg bg-gray-50 p-4 text-left">
+                                <div className="flex justify-between border-b py-2">
+                                    <span className="text-sm text-gray-500">
+                                        Event
+                                    </span>
+                                    <span className="text-sm font-medium">
+                                        {eventBasics.eventName}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between border-b py-2">
+                                    <span className="text-sm text-gray-500">
+                                        Category
+                                    </span>
+                                    <span className="text-sm font-medium">
+                                        {eventBasics.category
+                                            ? getCategoryLabel(eventBasics.category)
+                                            : ""}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between border-b py-2">
+                                    <span className="text-sm text-gray-500">
+                                        Location
+                                    </span>
+                                    <span className="text-sm font-medium">
+                                        {eventBasics.location}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between py-2">
+                                    <span className="text-sm text-gray-500">
+                                        Date
+                                    </span>
+                                    <span className="text-right text-sm font-medium">
+                                        {eventBasics.startDate ===
+                                            eventBasics.endDate
+                                            ? formatDate(eventBasics.startDate)
+                                            : `${formatDate(
+                                                eventBasics.startDate
+                                            )} – ${formatDate(
+                                                eventBasics.endDate
+                                            )}`}
+                                    </span>
                                 </div>
                             </div>
 
-                            {eventBasics.category === "planner" && (
-                                <div className="rounded-lg bg-gray-50 p-5">
-                                    <h3 className="text-lg font-semibold">Planner Requirements</h3>
-
-                                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                        <div>
-                                            <p className="text-sm text-gray-500">Services</p>
-                                            <p className="font-medium">{plannerDetails.services}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Guest Count</p>
-                                            <p className="font-medium">{plannerDetails.guestCount}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Budget</p>
-                                            <p className="font-medium">₹{plannerDetails.budget}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Planning Stage</p>
-                                            <p className="font-medium capitalize">
-                                                {plannerDetails.planningStage.replace("-", " ")}
-                                            </p>
-                                        </div>
-
-                                        {plannerDetails.theme && (
-                                            <div>
-                                                <p className="text-sm text-gray-500">Theme</p>
-                                                <p className="font-medium">{plannerDetails.theme}</p>
-                                            </div>
-                                        )}
-
-                                        {plannerDetails.specialRequirements && (
-                                            <div className="sm:col-span-2">
-                                                <p className="text-sm text-gray-500">
-                                                    Special Requirements
-                                                </p>
-                                                <p className="font-medium">
-                                                    {plannerDetails.specialRequirements}
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {plannerDetails.notes && (
-                                            <div className="sm:col-span-2">
-                                                <p className="text-sm text-gray-500">Notes</p>
-                                                <p className="font-medium">{plannerDetails.notes}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {eventBasics.category === "performer" && (
-                                <div className="rounded-lg bg-gray-50 p-5">
-                                    <h3 className="text-lg font-semibold">Performer Requirements</h3>
-
-                                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                        <div>
-                                            <p className="text-sm text-gray-500">Performance Type</p>
-                                            <p className="font-medium">
-                                                {performerDetails.performanceType}
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Genre</p>
-                                            <p className="font-medium">{performerDetails.genre}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Performers</p>
-                                            <p className="font-medium">
-                                                {performerDetails.performerCount}
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Duration</p>
-                                            <p className="font-medium">{performerDetails.duration}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Budget</p>
-                                            <p className="font-medium">₹{performerDetails.budget}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Equipment</p>
-                                            <p className="font-medium">
-                                                {[
-                                                    performerDetails.soundSystem && "Sound System",
-                                                    performerDetails.lighting && "Lighting",
-                                                    performerDetails.stage && "Stage",
-                                                ]
-                                                    .filter(Boolean)
-                                                    .join(", ") || "None specified"}
-                                            </p>
-                                        </div>
-
-                                        {performerDetails.specialRequirements && (
-                                            <div className="sm:col-span-2">
-                                                <p className="text-sm text-gray-500">
-                                                    Special Requirements
-                                                </p>
-                                                <p className="font-medium">
-                                                    {performerDetails.specialRequirements}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {eventBasics.category === "crew" && (
-                                <div className="rounded-lg bg-gray-50 p-5">
-                                    <h3 className="text-lg font-semibold">Crew Requirements</h3>
-
-                                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                        <div>
-                                            <p className="text-sm text-gray-500">Role</p>
-                                            <p className="font-medium">{crewDetails.role}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Number Required</p>
-                                            <p className="font-medium">{crewDetails.numberRequired}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Experience Level</p>
-                                            <p className="font-medium">
-                                                {crewDetails.experienceLevel}
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Duration</p>
-                                            <p className="font-medium">{crewDetails.duration}</p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-gray-500">Budget</p>
-                                            <p className="font-medium">₹{crewDetails.budget}</p>
-                                        </div>
-
-                                        <div className="sm:col-span-2">
-                                            <p className="text-sm text-gray-500">Responsibilities</p>
-                                            <p className="font-medium">
-                                                {crewDetails.responsibilities}
-                                            </p>
-                                        </div>
-
-                                        {crewDetails.equipmentRequired && (
-                                            <div className="sm:col-span-2">
-                                                <p className="text-sm text-gray-500">
-                                                    Equipment Required
-                                                </p>
-                                                <p className="font-medium">
-                                                    {crewDetails.equipmentRequired}
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {crewDetails.specialRequirements && (
-                                            <div className="sm:col-span-2">
-                                                <p className="text-sm text-gray-500">
-                                                    Special Requirements
-                                                </p>
-                                                <p className="font-medium">
-                                                    {crewDetails.specialRequirements}
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {crewDetails.notes && (
-                                            <div className="sm:col-span-2">
-                                                <p className="text-sm text-gray-500">Notes</p>
-                                                <p className="font-medium">{crewDetails.notes}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setStep(1);
+                                    setIsSubmitted(false);
+                                    setSubmitMessage("");
+                                    setEventBasics(initialEventBasics);
+                                    setPlannerDetails(initialPlannerDetails);
+                                    setPerformerDetails(initialPerformerDetails);
+                                    setCrewDetails(initialCrewDetails);
+                                }}
+                                className="mt-6 rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                            >
+                                Post Another Requirement
+                            </button>
                         </div>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <button
-                            type="button"
-                            onClick={handleBack}
-                            className="rounded-lg border px-6 py-2.5 text-sm font-medium transition hover:bg-gray-50"
-                        >
-                            Back
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleSubmit}
-                            className="rounded-lg bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-                        >
-                            Submit Requirement
-                        </button>
-                        {submitMessage && (
-                            <p className="mt-4 text-sm font-medium">
-                                {submitMessage}
-                            </p>
-                        )}
-                    </div>
+                    )}
                 </div>
             )}
         </div>
