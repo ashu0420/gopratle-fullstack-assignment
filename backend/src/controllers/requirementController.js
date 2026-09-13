@@ -131,7 +131,22 @@ const createRequirement = async (req, res, next) => {
         next(error);
     }
   };
+const getRequirements = async (req, res, next) => {
+    try {
+        const requirements = await Requirement.find().sort({
+            createdAt: -1,
+        });
 
+        res.status(200).json({
+            success: true,
+            count: requirements.length,
+            data: requirements,
+        });
+    } catch (error) {
+        next(error);
+    }
+  };
 module.exports = {
     createRequirement,
-};
+    getRequirements,
+  };
