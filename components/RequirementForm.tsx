@@ -23,7 +23,7 @@ const initialEventBasics: EventBasicsData = {
     location: "",
     venue: "",
     category: "",
-  };
+};
 
 const initialPlannerDetails: PlannerDetails = {
     services: "",
@@ -73,10 +73,52 @@ export default function RequirementForm() {
 
     const [crewDetails, setCrewDetails] =
         useState<CrewDetails>(initialCrewDetails);
+    const validateStep1 = () => {
+        if (!eventBasics.eventName.trim()) {
+            return "Please enter an event name.";
+        }
 
-    const handleNext = () => {
-        setStep((currentStep) => Math.min(4, currentStep + 1));
+        if (!eventBasics.eventType) {
+            return "Please select an event type.";
+        }
+
+        if (!eventBasics.startDate) {
+            return "Please select a start date.";
+        }
+
+        if (!eventBasics.endDate) {
+            return "Please select an end date.";
+        }
+
+        if (
+            new Date(eventBasics.endDate) <
+            new Date(eventBasics.startDate)
+        ) {
+            return "End date cannot be before the start date.";
+        }
+
+        if (!eventBasics.location.trim()) {
+            return "Please enter the event location.";
+        }
+
+        if (!eventBasics.category) {
+            return "Please select what you need.";
+        }
+
+        return null;
     };
+    const handleNext = () => {
+        if (step === 1) {
+            const error = validateStep1();
+
+            if (error) {
+                alert(error);
+                return;
+            }
+        }
+
+        setStep((currentStep) => Math.min(4, currentStep + 1));
+      };
 
     const handleBack = () => {
         setStep((currentStep) => Math.max(1, currentStep - 1));
@@ -114,7 +156,7 @@ export default function RequirementForm() {
             default:
                 return null;
         }
-      };
+    };
     return (
         <div className="mx-auto w-full max-w-2xl rounded-2xl border bg-white p-6 shadow-sm">
             {/* Progress */}
