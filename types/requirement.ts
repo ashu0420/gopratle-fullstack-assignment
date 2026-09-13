@@ -7,14 +7,17 @@ export type EventType =
     | "private"
     | "other";
 
+export type FormEventType = EventType | "";
+export type FormCategory = Category | "";
+
 export interface EventBasics {
     eventName: string;
-    eventType: EventType;
+    eventType: FormEventType;
     startDate: string;
     endDate: string;
     location: string;
     venue: string;
-    category: Category;
+    category: FormCategory;
 }
 
 export interface PlannerDetails {
