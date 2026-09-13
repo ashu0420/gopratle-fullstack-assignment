@@ -263,7 +263,7 @@ export default function RequirementForm() {
             setSubmitMessage("");
 
             const response = await fetch(
-                "http://localhost:5000/api/requirements",
+                `${process.env.NEXT_PUBLIC_API_URL}/api/requirements`,
                 {
                     method: "POST",
                     headers: {
@@ -297,7 +297,7 @@ export default function RequirementForm() {
         } finally {
             setIsSubmitting(false);
         }
-      };
+    };
     return (
         <div className="mx-auto w-full max-w-2xl rounded-2xl border bg-white p-6 shadow-sm">
             {/* Progress */}
@@ -406,9 +406,9 @@ export default function RequirementForm() {
                     </div>
 
                     <div className="rounded-lg bg-gray-50 p-4">
-                        <h3 className="mb-3 font-medium">
+                        {/* <h3 className="mb-3 font-medium">
                             Event Details
-                        </h3>
+                        </h3> */}
 
                         <div className="mt-6 space-y-6">
                             <div className="rounded-lg bg-gray-50 p-5">
@@ -431,8 +431,10 @@ export default function RequirementForm() {
                                         <p className="text-sm text-gray-500">Date</p>
                                         <p className="font-medium">
                                             {eventBasics.startDate === eventBasics.endDate
-                                                ? eventBasics.startDate
-                                                : `${eventBasics.startDate} – ${eventBasics.endDate}`}
+                                                ? formatDate(eventBasics.startDate)
+                                                : `${formatDate(eventBasics.startDate)} – ${formatDate(
+                                                    eventBasics.endDate
+                                                )}`}
                                         </p>
                                     </div>
 
@@ -684,4 +686,22 @@ function getCategoryLabel(category: Category) {
     };
 
     return labels[category];
+}
+
+function formatDate(dateString: string) {
+    if (!dateString) return "";
+
+    const [year, month, day] = dateString.split("-");
+
+    const date = new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day)
+    );
+
+    return date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
 }
