@@ -15,7 +15,11 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(
+    cors({
+        origin: "https://gopratle-frontend-eta.vercel.app",
+    })
+  );
 app.use(express.json());
 
 // Test route
