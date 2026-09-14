@@ -1,12 +1,29 @@
 const mongoose = require("mongoose");
 
+let cachedConnection = null;
+
 const connectDB = async () => {
+    if (cachedConnection) {
+        return cachedConnection;
+    }
+
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        cachedConnection = await mongoose.connect(
+            process.env.MONGODB_URI
+        );
+
         console.log("MongoDB connected");
+
+        return cachedConnection;
     } catch (error) {
-        console.error("MongoDB connection failed:", error.message);
-        process.exit(1);
+        cachedConnection = null;
+
+        console.error(
+            "MongoDB connection failed:",
+            error.message
+        );
+
+        throw error;
     }
 };
 
